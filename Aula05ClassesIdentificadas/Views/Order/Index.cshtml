@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Modelo.Order>
+
+<h2>Pedidos cadastrados</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Data</th>
+            <th>Itens do Pedido</th>
+            <th>Quantidade Total</th>
+            <th>Valor Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            var totalQuantidade = order.OrderItems?.Sum(i => i.Quantity) ?? 0;
+            var totalValor = order.OrderItems?.Sum(i => i.PurchasePrice * i.Quantity) ?? 0;
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.Customer?.Name</td>
+                <td>@order.OrderDate.ToShortDateString()</td>
+                <td>
+                    <ul>
+                        @foreach (var item in order.OrderItems ?? Enumerable.Empty<Modelo.OrderItem>())
+                        {
+                            <li>
+                                @item.Product?.ProductName
+                                (Qtd: @item.Quantity, Valor: @item.PurchasePrice.ToString("C"))
+                            </li>
+                        }
+                    </ul>
+                </td>
+                <td>@totalQuantidade</td>
+                <td>@totalValor.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
