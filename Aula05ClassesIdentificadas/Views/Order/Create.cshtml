@@ -10,14 +10,14 @@
     <div class="container">
 
         <form id="formOrder"
-        method="post"
-        asp-action="Create"
-        asp-controller="Order">
+              method="post"
+              asp-action="Create"
+              asp-controller="Order">
 
             <div class="row">
                 <div class="form-group">
                     <label asp-for="CustomerId">Cliente:</label>
-                    <select asp-for="CustomerId">
+                    <select asp-for="@Model.CustomerId" class="form-select">
                         @foreach (var c in Model.Customers)
                         {
                             <option value="@c.Id">@c.Name</option>
@@ -32,39 +32,38 @@
                         <th><i class="fa-solid fa-check"></i></th>
                         <th>Item</th>
                         <th>Quantidade</th>
+                        <th>Val. Unitário</th>
                         <th>Valor</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @{
-                        int i = 0;
-                    }
-                    @foreach(var item in Model.SelectedItems)
+                    @for (int i = 0; i < Model.SelectedItems!.Count; i++)
                     {
+                        
                         <tr>
                             <td>
                                 <input type="checkbox"
-                                asp-for="@Model.SelectedItems[i].IsSelected"/>
-                            </td>
-                            <td>@item.OrderItem.Product.ProductName</td>
-                            <td>
-                                <input type="number"
-                                asp-for="@Model.SelectedItems[@i].OrderItem.Quantity"
-                                value="@item.OrderItem.Quantity"
-                                step="1" />
+                                       asp-for="@Model.SelectedItems[i].IsSelected" />
                             </td>
                             <td>
-                                <div class="input-group">
-                                    <span class="input-group-text">R$</span>
-                                    <input type="number"
-                                    name="SelectedItems[@i].OrderItem.PurchasePrice"
-                                    value="@item.OrderItem.PurchasePrice"
-                                    step="0.01"
-                                    class="form-control"/>  
-                                </div>
+                                <input type="hidden"
+                                       asp-for="@Model.SelectedItems[i].OrderItem.Product!.Id" />
+                                <span>@Model.SelectedItems[i].OrderItem.Product!.ProductName</span>
+                            </td>
+                            
+                            <td>
+                                <input type="number" asp-for="@Model.SelectedItems[i].OrderItem.Quantity"
+                                       step="1" />
+                            </td>
+                            <td>
+                                <span>R$</span>
+                                <input type="number" asp-for="@Model.SelectedItems[i].OrderItem.PurchasePrice"
+                                       step="0.01" />
+                            </td>
+                            <td>
+                                <span>@string.Format("{0:C}", Model.SelectedItems[i].OrderItem.Product!.CurrentPrice)</span>
                             </td>
                         </tr>
-                        i++;
                     }
                 </tbody>
             </table>
